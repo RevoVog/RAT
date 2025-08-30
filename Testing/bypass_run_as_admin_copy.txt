@@ -1,0 +1,4 @@
+@echo off
+:: Example only for a controlled lab
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\path\to\test.ps1"
+pause
