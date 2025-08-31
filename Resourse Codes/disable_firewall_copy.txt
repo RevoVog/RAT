@@ -5,3 +5,12 @@ Write-Host "Windows Firewall has been disabled for all profiles."
 # Temporarily disable Windows Defender Real-Time Protection
 Set-MpPreference -DisableRealtimeMonitoring $true
 Write-Host "Windows Defender Real-Time Protection has been disabled."
+
+#Disabling User Account Control (UAC) 
+
+# Run PowerShell as Administrator
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "EnableLUA" -Value 0
+
+# Restart the system for changes to take effect
+Restart-Computer
+
