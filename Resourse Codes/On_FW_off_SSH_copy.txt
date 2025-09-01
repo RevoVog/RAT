@@ -1,9 +1,17 @@
 @echo off
-REM ==============================
-REM Close SSH session(s)
-REM ==============================
-echo Closing SSH sessions...
-taskkill /IM ssh.exe /F >nul 2>&1
+echo ==============================
+echo Stopping OpenSSH Server...
+echo ==============================
+
+REM Stop SSH service
+sc stop sshd
+
+REM Disable auto-start (optional)
+sc config sshd start=disabled
+
+echo OpenSSH Server has been stopped.
+pause
+
 
 REM ==============================
 REM Re-enable Windows Firewall
