@@ -54,9 +54,10 @@ case "$TOOL" in
         ;;
     
     -KILL)
-        $LOCAL_FILE = "kill.ps1"
+        LOCAL_FILE="./kill.ps1"
         sshpass -p "$PASS" scp -o StrictHostKeyChecking=no "$LOCAL_FILE" $USER@$IP:$REMOTE_PATH
-
+        sshpass -p "$PASS" ssh -o StrictHostKeyChecking=no $USER@$IP "powershell -ExecutionPolicy Bypass -File kill.ps1"
+        
 
         # set "startupFolder=%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup"
 
