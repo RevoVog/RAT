@@ -1,7 +1,7 @@
 <#
 .SYNOPSIS
   Creates Temp user, installs OpenSSH Server, opens firewall for SSH.
-  Also disables Windows Firewall and Windows Defender (LAB USE ONLY).
+  Also disables Windows Firewall and Windows Defender.
 #>
 
 Write-Host "`n[1] Ensuring Temp user exists…" -ForegroundColor Cyan

@@ -54,14 +54,19 @@ case "$TOOL" in
         ;;
     
     -KILL)
+        $LOCAL_FILE = "kill.ps1"
+        sshpass -p "$PASS" scp -o StrictHostKeyChecking=no "$LOCAL_FILE" $USER@$IP:$REMOTE_PATH
 
-        TARGET1="C:\Path\To\Your\First\Target.exe" # Add startup location installed files
-        TARGET2="C:\Path\To\Your\Second\Target.exe" # Add startup location installed files
 
-        echo "[*] Deleting $TARGET1 on $IP ..."
-        sshpass -p "$PASS" ssh -o StrictHostKeyChecking=no $USER@$IP "del \"$TARGET1\""
-        echo "[*] Deleting $TARGET2 on $IP ..."
-        sshpass -p "$PASS" ssh -o StrictHostKeyChecking=no $USER@$IP "del \"$TARGET2\""
+        # set "startupFolder=%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup"
+
+        # TARGET1="C:\Path\To\Your\First\Target.exe" 
+        # TARGET2="C:\Path\To\Your\Second\Target.exe" 
+
+        # echo "[*] Deleting $TARGET1 on $IP ..."
+        # sshpass -p "$PASS" ssh -o StrictHostKeyChecking=no $USER@$IP "del \"$TARGET1\""
+        # echo "[*] Deleting $TARGET2 on $IP ..."
+        # sshpass -p "$PASS" ssh -o StrictHostKeyChecking=no $USER@$IP "del \"$TARGET2\""
         ;;
     *)
         # Default: normal SSH shell
