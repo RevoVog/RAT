@@ -3,6 +3,7 @@
 # Usage:
 #   ./vRemote.sh <ip>                -> Normal SSH shell
 #   ./vRemote.sh <ip> -SS            -> Take screenshot
+#   ./vRemote.sh <ip> -SEND          -> Send file
 #   ./vRemote.sh <ip> -KILL          -> Example for more tools later
 
 if [ -z "$1" ]; then
