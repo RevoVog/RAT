@@ -25,18 +25,25 @@ case "$TOOL" in
         # Copy Screenshot.ps1 to Windows
         sshpass -p "$PASS" scp -o StrictHostKeyChecking=no Screenshot.ps1 $USER@$IP:~
 
-        # Run Screenshot.ps1 remotely
-        sshpass -p "$PASS" ssh -o StrictHostKeyChecking=no $USER@$IP "powershell -ExecutionPolicy Bypass -File Screenshot.ps1"
+        # Create scheduled task to run Screenshot.ps1 as active user
+        sshpass -p "$PASS" ssh -o StrictHostKeyChecking=no $USER@$IP "schtasks /Create /TN ScreenCap /TR 'powershell -ExecutionPolicy Bypass -File %USERPROFILE%\\Screenshot.ps1' /SC ONCE /ST 00:00 /RL HIGHEST /F"
+
+        # Run the task
+        sshpass -p "$PASS" ssh -o StrictHostKeyChecking=no $USER@$IP "schtasks /Run /TN ScreenCap"
+
+        # Wait for screenshot
+        sleep 5
 
         # Fetch the screenshot
         mkdir -p data
         sshpass -p "$PASS" scp -o StrictHostKeyChecking=no $USER@$IP:~/screenshot.png ./data/
 
-        # Cleanup remote files
-        sshpass -p "$PASS" ssh -o StrictHostKeyChecking=no $USER@$IP "del Screenshot.ps1; del screenshot.png"
+        # Cleanup
+        sshpass -p "$PASS" ssh -o StrictHostKeyChecking=no $USER@$IP "schtasks /Delete /TN ScreenCap /F; del Screenshot.ps1; del screenshot.png"
 
         echo "[*] Screenshot saved to ./data/"
         ;;
+
     -KILL)
         TARGET="$3"
         if [ -z "$TARGET" ]; then
