@@ -22,32 +22,21 @@ case "$TOOL" in
     -SS)
         echo "[*] Running Screenshot tool on $IP ..."
 
-        # Copy Screenshot.ps1 to Windows home directory
+        # Copy Screenshot.ps1 to Windows
         sshpass -p "$PASS" scp -o StrictHostKeyChecking=no Screenshot.ps1 $USER@$IP:~
 
-        # Create a CMD wrapper on the remote host
-        sshpass -p "$PASS" ssh -o StrictHostKeyChecking=no $USER@$IP "echo powershell -ExecutionPolicy Bypass -File %USERPROFILE%\\Screenshot.ps1 > %USERPROFILE%\\RunScreenshot.cmd"
+        # Run Screenshot.ps1 remotely
+        sshpass -p "$PASS" ssh -o StrictHostKeyChecking=no $USER@$IP "powershell -ExecutionPolicy Bypass -File Screenshot.ps1"
 
-        # Create scheduled task to run the wrapper
-        sshpass -p "$PASS" ssh -o StrictHostKeyChecking=no $USER@$IP "schtasks /Create /TN ScreenCap /TR %USERPROFILE%\\RunScreenshot.cmd /SC ONCE /ST 00:00 /RL HIGHEST /F"
-
-        # Run the scheduled task
-        sshpass -p "$PASS" ssh -o StrictHostKeyChecking=no $USER@$IP "schtasks /Run /TN ScreenCap"
-
-        # Wait for screenshot to be generated
-        sleep 5
-
-        # Fetch the screenshot back to Linux
+        # Fetch the screenshot
         mkdir -p data
         sshpass -p "$PASS" scp -o StrictHostKeyChecking=no $USER@$IP:~/screenshot.png ./data/
 
-        # Cleanup on Windows
-        sshpass -p "$PASS" ssh -o StrictHostKeyChecking=no $USER@$IP "schtasks /Delete /TN ScreenCap /F & del %USERPROFILE%\\Screenshot.ps1 & del %USERPROFILE%\\RunScreenshot.cmd & del %USERPROFILE%\\screenshot.png"
+        # Cleanup remote files
+        sshpass -p "$PASS" ssh -o StrictHostKeyChecking=no $USER@$IP "del Screenshot.ps1; del screenshot.png"
 
         echo "[*] Screenshot saved to ./data/"
         ;;
-
-
     -KILL)
         TARGET="$3"
         if [ -z "$TARGET" ]; then
