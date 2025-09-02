@@ -3,7 +3,7 @@
 # Usage:
 #   ./vRemote.sh <ip>                -> Normal SSH shell
 #   ./vRemote.sh <ip> -SS            -> Take screenshot
-#   ./vRemote.sh <ip> -KILL <target> -> Example for more tools later
+#   ./vRemote.sh <ip> -KILL          -> Example for more tools later
 
 if [ -z "$1" ]; then
     echo "Usage: $0 <ip> [tool]"
@@ -37,14 +37,31 @@ case "$TOOL" in
 
         echo "[*] Screenshot saved to ./data/"
         ;;
-    -KILL)
-        TARGET="$3"
-        if [ -z "$TARGET" ]; then
-            echo "Usage: $0 <ip> -KILL <target_file>"
+        
+    -SEND)
+        if [ -z "$3" ]; then
+            echo "Usage: $0 <ip> -SEND <local_file_path>"
             exit 1
         fi
-        echo "[*] Deleting $TARGET on $IP ..."
-        sshpass -p "$PASS" ssh -o StrictHostKeyChecking=no $USER@$IP "del \"$TARGET\""
+
+        LOCAL_FILE="$3"
+        REMOTE_PATH="~"
+
+        echo "[*] Sending $LOCAL_FILE to $IP ..."
+        sshpass -p "$PASS" scp -o StrictHostKeyChecking=no "$LOCAL_FILE" $USER@$IP:$REMOTE_PATH
+
+        echo "[*] File sent to $IP:$REMOTE_PATH"
+        ;;
+    
+    -KILL)
+
+        TARGET1="C:\Path\To\Your\First\Target.exe" # Add startup location installed files
+        TARGET2="C:\Path\To\Your\Second\Target.exe" # Add startup location installed files
+
+        echo "[*] Deleting $TARGET1 on $IP ..."
+        sshpass -p "$PASS" ssh -o StrictHostKeyChecking=no $USER@$IP "del \"$TARGET1\""
+        echo "[*] Deleting $TARGET2 on $IP ..."
+        sshpass -p "$PASS" ssh -o StrictHostKeyChecking=no $USER@$IP "del \"$TARGET2\""
         ;;
     *)
         # Default: normal SSH shell
